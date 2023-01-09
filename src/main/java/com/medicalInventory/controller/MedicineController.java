@@ -27,8 +27,7 @@ public class MedicineController {
 	
 	@GetMapping("/medicines")
 	public List<Medicine> getMedicine(){
-		List<Medicine> medicine = medicineService.getmedicine();
-		return medicine;
+		return medicineService.getmedicine();
 	}
 	
 	@GetMapping("/medicine/{id}")

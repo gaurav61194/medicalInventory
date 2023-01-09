@@ -1,11 +1,15 @@
 package com.medicalInventory.controller;
 
 import java.util.List;
+
 import javax.validation.Valid;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +24,10 @@ import com.medicalInventory.services.EmployeeService;
 
 @RestController
 @RequestMapping("/api/v1")
+@CrossOrigin(origins = "http://localhost:3000")
 public class EmployeeController {
+	
+	Log logger = LogFactory.getLog(EmployeeController.class);
 	
 	@Autowired
 	public EmployeeService employeeService;
@@ -30,41 +37,38 @@ public class EmployeeController {
 		return employeeService.getEmployee();
 	}
 	
-	@GetMapping("/employee/{id}")
+	@GetMapping("/employees/{id}")
 	public Employee getEmployeeById(@Valid @PathVariable("id") long id)throws Throwable  {
 		return employeeService.getEmployeeById(id);
 	}
 	
-	@PostMapping("/employee")
-	public ResponseEntity<Employee> addEmployee(@Valid @RequestBody Employee employee){
-		employee = employeeService.addEmployee(employee);
-		ResponseEntity<Employee> emp = new ResponseEntity<>(employee, HttpStatus.OK);
-		return emp;
+	@PostMapping("/employees")
+	public Object addEmployee(@Valid @RequestBody Employee employee) throws Throwable{
+		return employeeService.addEmployee(employee);
 		
 	}
 	
-	@PutMapping("/employee/{id}")
-	public ResponseEntity <Employee> updateEmployee(@Valid @PathVariable("id") long id, @RequestBody Employee employee) throws Throwable{
+	@PutMapping("/employees/{id}")
+	public ResponseEntity <Employee> upadateEmployee(@Valid @PathVariable("id") Long id, @RequestBody Employee employeeDetails) throws Throwable{
 		Employee emp = employeeService.getEmployeeById(id);
 		
+		emp.setFirstName(employeeDetails.getFirstName());
+		emp.setLastName(employeeDetails.getLastName());
+		emp.setDob(employeeDetails.getDob());
+		emp.setAddress(employeeDetails.getAddress());
+		emp.setContactNumber(employeeDetails.getContactNumber());
+		emp.setEmailId(employeeDetails.getEmailId());
+		emp.setRole(employeeDetails.getRole());
 		
-		emp.setFirstName(employee.getFirstName());
-		emp.setLastName(employee.getLastName());
-		emp.setDob(employee.getDob());
-		emp.setAddress(employee.getAddress());
-		emp.setContactNumber(employee.getContactNumber());
-		emp.setEmailId(employee.getEmailId());
-		emp.setRole(employee.getRole());
+		Employee upadatedEmployee = employeeService.upadateEmployee(emp);
 		
-		Employee updateEmployee = employeeService.upadateEmployee(emp);
-		
-		return ResponseEntity.ok(updateEmployee);
-		
+		return ResponseEntity.ok(upadatedEmployee);	
 	}
 	
-	@DeleteMapping("/employee/{id}")
+	@DeleteMapping("/employees/{id}")
 	public ResponseEntity <String> deleteEmployeeById(@Valid @PathVariable("id") long id)throws Throwable{
 		employeeService.deleteEmployeeById(id);
 		return new ResponseEntity<>("Employee deleted sucessfully..!", HttpStatus.OK);
 	}
+
 }

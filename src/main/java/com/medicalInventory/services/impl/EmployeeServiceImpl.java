@@ -6,16 +6,16 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.medicalInventory.dao.EmployeeRepo;
 import com.medicalInventory.dto.Employee;
 import com.medicalInventory.exceptions.ResourceNotFoundException;
 import com.medicalInventory.services.EmployeeService;
+import com.medicalInventory.dao.EmployeeRepository;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 	
 	@Autowired
-    private EmployeeRepo employeeRepo;
+    private EmployeeRepository employeeRepo;
 
 	@Override
 	public List<Employee> getEmployee(){
@@ -34,17 +34,22 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 	
 	@Override
-	public Employee addEmployee(Employee employee) {
-//		Optional<Employee> addEmployee = employeeRepo.findByEmailId(employee.getEmailId());
-//		if(addEmployee.isPresent()) {
-//			throw new ResourceNotFoundException("Employee already exist with given email: "+employee.getEmailId());
-//		}
-		return employeeRepo.save(employee);
-	}
+    public Object addEmployee(Employee employee) throws ResourceNotFoundException
+    {
+		Employee existingDoctor = employeeRepo.findByEmailId(employee.getEmailId());
+        if(existingDoctor == null)
+        {
+            return employeeRepo.save(employee);
+        }
+        else
+        {
+            return "Employee Already Exists with this EmailID!";
+        }
+    }
 	
 	@Override
-	public Employee upadateEmployee(Employee emp)throws ResourceNotFoundException{
-		return employeeRepo.save(emp);
+	public Employee upadateEmployee(Employee employee) throws ResourceNotFoundException{
+		return employeeRepo.save(employee);
 	}
 	
 	@Override

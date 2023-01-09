@@ -27,8 +27,7 @@ public class PatientController {
 	
 	@GetMapping("/patients")
 	public List< Patient > getAllPatients(){
-		List<Patient> patient= patientService.getAllPatient();
-		return patient;
+		return patientService.getAllPatient();
 	}
 	
 	@GetMapping("/patient/{id}")
@@ -51,16 +50,5 @@ public class PatientController {
 		patientService.deletePatientById(id);
 		return new ResponseEntity<>("Employee deleted Sucessfully..!",HttpStatus.OK);
 	}
-	
-	
-//	@DeleteMapping("/patient/{id}")
-//	public ResponseEntity < Map< String, Boolean>> deletePatient(@PathVariable("id") Long id){
-//		Patient patient = patientService.findById(id).orElseThrow(() -> new ResourceNotFoundException("Patient not exist with id :" + id));
-//		patientService.delete(patient);
-//		Map < String, Boolean > response = new HashMap <> ();
-//		response.put("deleted", Boolean.TRUE);
-//		return ResponseEntity.ok(response);
-//		
-//	}
 	
 }
